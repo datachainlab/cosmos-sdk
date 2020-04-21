@@ -273,7 +273,7 @@ func (suite *LocalhostTestSuite) TestVerifyPacketAcknowledgementAbsence() {
 			name:        "ApplyPrefix failed",
 			clientState: types.NewClientState(suite.store, "chainID", 10),
 			prefix:      commitmenttypes.MerklePrefix{},
-			expPass:     false,
+			expPass:     true,
 		},
 	}
 

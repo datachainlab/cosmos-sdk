@@ -13,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/ibc/02-client/exported"
 	"github.com/cosmos/cosmos-sdk/x/ibc/02-client/types"
 	ibctmtypes "github.com/cosmos/cosmos-sdk/x/ibc/07-tendermint/types"
+	localhosttypes "github.com/cosmos/cosmos-sdk/x/ibc/09-localhost/types"
 	commitmenttypes "github.com/cosmos/cosmos-sdk/x/ibc/23-commitment/types"
 	ibctypes "github.com/cosmos/cosmos-sdk/x/ibc/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -50,6 +51,12 @@ func (k Keeper) GetClientState(ctx sdk.Context, clientID string) (exported.Clien
 
 	var clientState exported.ClientState
 	k.cdc.MustUnmarshalBinaryBare(bz, &clientState)
+
+	switch clientState := clientState.(type) {
+	case localhosttypes.ClientState:
+		clientState.SetStore(ctx.KVStore(k.storeKey))
+		return clientState, true
+	}
 	return clientState, true
 }
 

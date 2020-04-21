@@ -63,6 +63,11 @@ func (cs ClientState) IsFrozen() bool {
 	return false
 }
 
+// SetStore sets store
+func (cs *ClientState) SetStore(store sdk.KVStore) {
+	cs.store = store
+}
+
 // VerifyClientConsensusState verifies a proof of the consensus
 // state of the loop-back client.
 // VerifyClientConsensusState verifies a proof of the consensus state of the
@@ -113,12 +118,8 @@ func (cs ClientState) VerifyConnectionState(
 	connectionEnd connectionexported.ConnectionI,
 	_ clientexported.ConsensusState,
 ) error {
-	path, err := commitmenttypes.ApplyPrefix(prefix, ibctypes.ConnectionPath(connectionID))
-	if err != nil {
-		return err
-	}
-
-	bz := cs.store.Get([]byte(path.String()))
+	path := ibctypes.KeyConnection(connectionID)
+	bz := cs.store.Get(path)
 	if bz == nil {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedConnectionStateVerification, "not found for path %s", path)
 	}
@@ -150,12 +151,8 @@ func (cs ClientState) VerifyChannelState(
 	channel channelexported.ChannelI,
 	_ clientexported.ConsensusState,
 ) error {
-	path, err := commitmenttypes.ApplyPrefix(prefix, ibctypes.ChannelPath(portID, channelID))
-	if err != nil {
-		return err
-	}
-
-	bz := cs.store.Get([]byte(path.String()))
+	path := ibctypes.KeyChannel(portID, channelID)
+	bz := cs.store.Get(path)
 	if bz == nil {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedChannelStateVerification, "not found for path %s", path)
 	}
@@ -186,12 +183,8 @@ func (cs ClientState) VerifyPacketCommitment(
 	commitmentBytes []byte,
 	_ clientexported.ConsensusState,
 ) error {
-	path, err := commitmenttypes.ApplyPrefix(prefix, ibctypes.PacketCommitmentPath(portID, channelID, sequence))
-	if err != nil {
-		return err
-	}
-
-	data := cs.store.Get([]byte(path.String()))
+	path := ibctypes.KeyPacketCommitment(portID, channelID, sequence)
+	data := cs.store.Get(path)
 	if len(data) == 0 {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedPacketCommitmentVerification, "not found for path %s", path)
 	}
@@ -218,12 +211,8 @@ func (cs ClientState) VerifyPacketAcknowledgement(
 	acknowledgement []byte,
 	_ clientexported.ConsensusState,
 ) error {
-	path, err := commitmenttypes.ApplyPrefix(prefix, ibctypes.PacketAcknowledgementPath(portID, channelID, sequence))
-	if err != nil {
-		return err
-	}
-
-	data := cs.store.Get([]byte(path.String()))
+	path := ibctypes.KeyPacketAcknowledgement(portID, channelID, sequence)
+	data := cs.store.Get(path)
 	if len(data) == 0 {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedPacketAckVerification, "not found for path %s", path)
 	}
@@ -250,12 +239,8 @@ func (cs ClientState) VerifyPacketAcknowledgementAbsence(
 	sequence uint64,
 	_ clientexported.ConsensusState,
 ) error {
-	path, err := commitmenttypes.ApplyPrefix(prefix, ibctypes.PacketAcknowledgementPath(portID, channelID, sequence))
-	if err != nil {
-		return err
-	}
-
-	data := cs.store.Get([]byte(path.String()))
+	path := ibctypes.KeyPacketAcknowledgement(portID, channelID, sequence)
+	data := cs.store.Get(path)
 	if data != nil {
 		return sdkerrors.Wrap(clienttypes.ErrFailedPacketAckAbsenceVerification, "expected no ack absence")
 	}
@@ -274,12 +259,8 @@ func (cs ClientState) VerifyNextSequenceRecv(
 	nextSequenceRecv uint64,
 	_ clientexported.ConsensusState,
 ) error {
-	path, err := commitmenttypes.ApplyPrefix(prefix, ibctypes.NextSequenceRecvPath(portID, channelID))
-	if err != nil {
-		return err
-	}
-
-	data := cs.store.Get([]byte(path.String()))
+	path := ibctypes.KeyNextSequenceRecv(portID, channelID)
+	data := cs.store.Get(path)
 	if len(data) == 0 {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedNextSeqRecvVerification, "not found for path %s", path)
 	}
