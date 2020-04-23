@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	clientexported "github.com/cosmos/cosmos-sdk/x/ibc/02-client/exported"
 	clienttypes "github.com/cosmos/cosmos-sdk/x/ibc/02-client/types"
 	"github.com/cosmos/cosmos-sdk/x/ibc/03-connection/types"
 	commitmentexported "github.com/cosmos/cosmos-sdk/x/ibc/23-commitment/exported"
@@ -66,17 +67,32 @@ func (k Keeper) SetConnection(ctx sdk.Context, connectionID string, connection t
 // GetTimestampAtHeight returns the timestamp in nanoseconds of the consensus state at the
 // given height.
 func (k Keeper) GetTimestampAtHeight(ctx sdk.Context, connection types.ConnectionEnd, height uint64) (uint64, error) {
+	clientState, found := k.clientKeeper.GetClientState(ctx, connection.GetClientID())
+	if !found {
+		return 0, sdkerrors.Wrapf(
+			clienttypes.ErrClientNotFound,
+			"clientID (%s)", connection.GetClientID(),
+		)
+	}
 	consensusState, found := k.clientKeeper.GetClientConsensusState(
 		ctx, connection.GetClientID(), height,
 	)
-
 	if !found {
-		return 0, sdkerrors.Wrapf(
-			clienttypes.ErrConsensusStateNotFound,
-			"clientID (%s), height (%d)", connection.GetClientID(), height,
-		)
+		if clientState.ClientType() == clientexported.Localhost {
+			consensusState, found = k.clientKeeper.GetSelfConsensusState(ctx, height)
+			if !found {
+				return 0, sdkerrors.Wrapf(
+					clienttypes.ErrSelfConsensusStateNotFound,
+					"height (%d)", height,
+				)
+			}
+		} else {
+			return 0, sdkerrors.Wrapf(
+				clienttypes.ErrConsensusStateNotFound,
+				"clientID (%s), height (%d)", connection.GetClientID(), height,
+			)
+		}
 	}
-
 	return consensusState.GetTimestamp(), nil
 }
 

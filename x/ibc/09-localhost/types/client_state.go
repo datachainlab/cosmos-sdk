@@ -20,18 +20,18 @@ var _ clientexported.ClientState = ClientState{}
 // ClientState requires (read-only) access to keys outside the client prefix.
 type ClientState struct {
 	store   sdk.KVStore
+	height  int64
 	ID      string `json:"id" yaml:"id"`
 	ChainID string `json:"chain_id" yaml:"chain_id"`
-	Height  int64  `json:"height" yaml:"height"`
 }
 
 // NewClientState creates a new ClientState instance
 func NewClientState(store sdk.KVStore, chainID string, height int64) ClientState {
 	return ClientState{
 		store:   store,
+		height:  height,
 		ID:      clientexported.Localhost.String(),
 		ChainID: chainID,
-		Height:  height,
 	}
 }
 
@@ -52,7 +52,7 @@ func (cs ClientState) ClientType() clientexported.ClientType {
 
 // GetLatestHeight returns the latest height stored.
 func (cs ClientState) GetLatestHeight() uint64 {
-	return uint64(cs.Height)
+	return uint64(cs.height)
 }
 
 // IsFrozen returns false.
@@ -60,9 +60,11 @@ func (cs ClientState) IsFrozen() bool {
 	return false
 }
 
-// SetStore sets store
-func (cs *ClientState) SetStore(store sdk.KVStore) {
+// Update sets store and height.
+func (cs ClientState) Update(store sdk.KVStore, height int64) ClientState {
 	cs.store = store
+	cs.height = height
+	return cs
 }
 
 // VerifyClientConsensusState verifies a proof of the consensus

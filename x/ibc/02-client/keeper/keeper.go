@@ -54,8 +54,7 @@ func (k Keeper) GetClientState(ctx sdk.Context, clientID string) (exported.Clien
 
 	switch clientState := clientState.(type) {
 	case localhosttypes.ClientState:
-		clientState.SetStore(ctx.KVStore(k.storeKey))
-		return clientState, true
+		return clientState.Update(ctx.KVStore(k.storeKey), ctx.BlockHeight()), true
 	}
 	return clientState, true
 }
