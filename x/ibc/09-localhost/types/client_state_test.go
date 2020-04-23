@@ -25,17 +25,10 @@ func (suite *LocalhostTestSuite) TestVerifyClientConsensusState() {
 		expPass     bool
 	}{
 		{
-			name:        "ApplyPrefix failed",
+			name:        "No error",
 			clientState: types.NewClientState(suite.store, "chainID", 10),
 			prefix:      commitmenttypes.MerklePrefix{},
-			expPass:     false,
-		},
-		{
-			name:        "proof verification failed",
-			clientState: types.NewClientState(suite.store, "chainID", 10),
-			prefix:      commitmenttypes.NewMerklePrefix([]byte("ibc")),
-			proof:       commitmenttypes.MerkleProof{},
-			expPass:     false,
+			expPass:     true,
 		},
 	}
 

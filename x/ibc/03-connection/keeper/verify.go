@@ -87,7 +87,7 @@ func (k Keeper) VerifyChannelState(
 	consensusState, found := k.clientKeeper.GetClientConsensusState(
 		ctx, connection.GetClientID(), height,
 	)
-	if !found {
+	if !found && clientState.ClientType() != clientexported.Localhost {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrConsensusStateNotFound,
 			"clientID (%s), height (%d)", connection.GetClientID(), height,
@@ -121,7 +121,7 @@ func (k Keeper) VerifyPacketCommitment(
 	consensusState, found := k.clientKeeper.GetClientConsensusState(
 		ctx, connection.GetClientID(), height,
 	)
-	if !found {
+	if !found && clientState.ClientType() != clientexported.Localhost {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrConsensusStateNotFound,
 			"clientID (%s), height (%d)", connection.GetClientID(), height,
@@ -155,7 +155,7 @@ func (k Keeper) VerifyPacketAcknowledgement(
 	consensusState, found := k.clientKeeper.GetClientConsensusState(
 		ctx, connection.GetClientID(), height,
 	)
-	if !found {
+	if !found && clientState.ClientType() != clientexported.Localhost {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrConsensusStateNotFound,
 			"clientID (%s), height (%d)", connection.GetClientID(), height,
@@ -189,7 +189,7 @@ func (k Keeper) VerifyPacketAcknowledgementAbsence(
 	consensusState, found := k.clientKeeper.GetClientConsensusState(
 		ctx, connection.GetClientID(), height,
 	)
-	if !found {
+	if !found && clientState.ClientType() != clientexported.Localhost {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrConsensusStateNotFound,
 			"clientID (%s), height (%d)", connection.GetClientID(), height,
@@ -222,7 +222,7 @@ func (k Keeper) VerifyNextSequenceRecv(
 	consensusState, found := k.clientKeeper.GetClientConsensusState(
 		ctx, connection.GetClientID(), height,
 	)
-	if !found {
+	if !found && clientState.ClientType() != clientexported.Localhost {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrConsensusStateNotFound,
 			"clientID (%s), height (%d)", connection.GetClientID(), height,
