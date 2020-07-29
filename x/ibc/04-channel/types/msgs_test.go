@@ -359,11 +359,9 @@ var (
 	disabledTimeout   = uint64(0)
 	validPacketData   = []byte("testdata")
 	unknownPacketData = []byte("unknown")
-	invalidAckData    = []byte("123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")
 
 	packet        = NewPacket(validPacketData, 1, portid, chanid, cpportid, cpchanid, timeoutHeight, timeoutTimestamp)
 	unknownPacket = NewPacket(unknownPacketData, 0, portid, chanid, cpportid, cpchanid, timeoutHeight, timeoutTimestamp)
-	invalidAck    = invalidAckData
 
 	emptyProof     = commitmenttypes.MerkleProof{Proof: nil}
 	invalidProofs1 = commitmentexported.Proof(nil)
@@ -484,7 +482,6 @@ func (suite *MsgTestSuite) TestMsgAcknowledgement() {
 		NewMsgAcknowledgement(packet, packet.GetData(), proof, 1, emptyAddr),
 		NewMsgAcknowledgement(packet, packet.GetData(), emptyProof, 1, addr),
 		NewMsgAcknowledgement(unknownPacket, packet.GetData(), proof, 1, addr),
-		NewMsgAcknowledgement(packet, invalidAck, proof, 1, addr),
 		NewMsgAcknowledgement(packet, packet.GetData(), invalidProofs1, 1, addr),
 	}
 
@@ -498,8 +495,7 @@ func (suite *MsgTestSuite) TestMsgAcknowledgement() {
 		{testMsgs[2], false, "missing signer address"},
 		{testMsgs[3], false, "cannot submit an empty proof"},
 		{testMsgs[4], false, "invalid packet"},
-		{testMsgs[5], false, "invalid acknowledgement"},
-		{testMsgs[6], false, "cannot submit an invalid proof"},
+		{testMsgs[5], false, "cannot submit an invalid proof"},
 	}
 
 	for i, tc := range testCases {
