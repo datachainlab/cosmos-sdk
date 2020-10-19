@@ -450,7 +450,7 @@ func produceVerificationArgs(
 		return nil, 0, 0, sdkerrors.Wrapf(ErrInvalidProof, "the consensus state timestamp is greater than the signature timestamp (%d >= %d)", cs.ConsensusState.GetTimestamp(), timestamp)
 	}
 
-	return sigData, timestamp, sequence, nil
+	return sigData, timestamp, latestSequence, nil
 }
 
 // sets the client state to the store
