@@ -10,6 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/ibc/core/03-connection/types"
 	commitmenttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/23-commitment/types"
 	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
+	tmtypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/07-tendermint/types"
 )
 
 // ConnOpenInit initialises a connection attempt on chain A.
@@ -86,11 +87,6 @@ func (k Keeper) ConnOpenTry(
 		return err
 	}
 
-	expectedConsensusState, found := k.clientKeeper.GetSelfConsensusState(ctx, consensusHeight)
-	if !found {
-		return sdkerrors.Wrap(clienttypes.ErrSelfConsensusStateNotFound, consensusHeight.String())
-	}
-
 	// If the connection id chosen for this connection end by the counterparty is empty then
 	// flexible connection identifier selection is allowed by using the desired connection id.
 	// Otherwise the desiredConnectionID must match the counterpartyChosenConnectionID.
@@ -149,11 +145,18 @@ func (k Keeper) ConnOpenTry(
 		return err
 	}
 
-	// Check that ChainA stored the correct ConsensusState of chainB at the given consensusHeight
-	if err := k.VerifyClientConsensusState(
-		ctx, connection, proofHeight, consensusHeight, proofConsensus, expectedConsensusState,
-	); err != nil {
-		return err
+	if clientState.ClientType() == tmtypes.Tendermint {
+		expectedConsensusState, found := k.clientKeeper.GetSelfConsensusState(ctx, consensusHeight)
+		if !found {
+			return sdkerrors.Wrap(clienttypes.ErrSelfConsensusStateNotFound, consensusHeight.String())
+		}
+
+		// Check that ChainA stored the correct ConsensusState of chainB at the given consensusHeight
+		if err := k.VerifyClientConsensusState(
+			ctx, connection, proofHeight, consensusHeight, proofConsensus, expectedConsensusState,
+		); err != nil {
+			return err
+		}
 	}
 
 	// store connection in chainB state
@@ -242,12 +245,6 @@ func (k Keeper) ConnOpenAck(
 		return err
 	}
 
-	// Retrieve chainA's consensus state at consensusheight
-	expectedConsensusState, found := k.clientKeeper.GetSelfConsensusState(ctx, consensusHeight)
-	if !found {
-		return clienttypes.ErrSelfConsensusStateNotFound
-	}
-
 	prefix := k.GetCommitmentPrefix()
 	expectedCounterparty := types.NewCounterparty(connection.ClientId, connectionID, commitmenttypes.NewMerklePrefix(prefix.Bytes()))
 	expectedConnection := types.NewConnectionEnd(types.TRYOPEN, connection.Counterparty.ClientId, expectedCounterparty, []string{encodedVersion})
@@ -265,11 +262,19 @@ func (k Keeper) ConnOpenAck(
 		return err
 	}
 
-	// Ensure that ChainB has stored the correct ConsensusState for chainA at the consensusHeight
-	if err := k.VerifyClientConsensusState(
-		ctx, connection, proofHeight, consensusHeight, proofConsensus, expectedConsensusState,
-	); err != nil {
-		return err
+	if clientState.ClientType() == tmtypes.Tendermint {
+		// Retrieve chainA's consensus state at consensusheight
+		expectedConsensusState, found := k.clientKeeper.GetSelfConsensusState(ctx, consensusHeight)
+		if !found {
+			return clienttypes.ErrSelfConsensusStateNotFound
+		}
+
+		// Ensure that ChainB has stored the correct ConsensusState for chainA at the consensusHeight
+		if err := k.VerifyClientConsensusState(
+			ctx, connection, proofHeight, consensusHeight, proofConsensus, expectedConsensusState,
+		); err != nil {
+			return err
+		}
 	}
 
 	k.Logger(ctx).Info("connection state updated", "connection-id", connectionID, "previous-state", connection.State.String(), "new-state", "OPEN")
