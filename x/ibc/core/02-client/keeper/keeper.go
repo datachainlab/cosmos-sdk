@@ -17,6 +17,7 @@ import (
 	commitmenttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/23-commitment/types"
 	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
 	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
+	solomachinetypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/06-solomachine/types"
 	ibctmtypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/07-tendermint/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
@@ -63,6 +64,13 @@ func (k Keeper) SetClientState(ctx sdk.Context, clientID string, clientState exp
 
 // GetClientConsensusState gets the stored consensus state from a client at a given height.
 func (k Keeper) GetClientConsensusState(ctx sdk.Context, clientID string, height exported.Height) (exported.ConsensusState, bool) {
+	cs, found := k.GetClientState(ctx, clientID)
+	if !found {
+		return nil, false
+	}
+	if cs.ClientType() == solomachinetypes.SoloMachine {
+		height = types.NewHeight(height.GetVersionNumber(), 1)
+	}
 	store := k.ClientStore(ctx, clientID)
 	bz := store.Get(host.KeyConsensusState(height))
 	if bz == nil {
