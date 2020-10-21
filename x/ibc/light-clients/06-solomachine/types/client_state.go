@@ -8,6 +8,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	clienttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/02-client/types"
+	channeltypes "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
 	commitmenttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/23-commitment/types"
 	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
 	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
@@ -295,7 +296,7 @@ func (cs ClientState) VerifyPacketAcknowledgement(
 		return err
 	}
 
-	signBz, err := PacketAcknowledgementSignBytes(cdc, sequence, timestamp, cs.ConsensusState.Diversifier, path, acknowledgement)
+	signBz, err := PacketAcknowledgementSignBytes(cdc, sequence, timestamp, cs.ConsensusState.Diversifier, path, channeltypes.CommitAcknowledgement(acknowledgement))
 	if err != nil {
 		return err
 	}
@@ -409,7 +410,7 @@ func produceVerificationArgs(
 		return nil, 0, 0, sdkerrors.Wrap(commitmenttypes.ErrInvalidPrefix, "prefix cannot be empty")
 	}
 
-	_, ok := prefix.(commitmenttypes.MerklePrefix)
+	_, ok := prefix.(*commitmenttypes.MerklePrefix)
 	if !ok {
 		return nil, 0, 0, sdkerrors.Wrapf(commitmenttypes.ErrInvalidPrefix, "invalid prefix type %T, expected MerklePrefix", prefix)
 	}
@@ -450,7 +451,7 @@ func produceVerificationArgs(
 		return nil, 0, 0, sdkerrors.Wrapf(ErrInvalidProof, "the consensus state timestamp is greater than the signature timestamp (%d >= %d)", cs.ConsensusState.GetTimestamp(), timestamp)
 	}
 
-	return sigData, timestamp, sequence, nil
+	return sigData, timestamp, latestSequence, nil
 }
 
 // sets the client state to the store
