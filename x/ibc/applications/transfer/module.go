@@ -360,7 +360,7 @@ func (am AppModule) OnAcknowledgementPacket(
 			sdk.NewAttribute(types.AttributeKeyReceiver, data.Receiver),
 			sdk.NewAttribute(types.AttributeKeyDenom, data.Denom),
 			sdk.NewAttribute(types.AttributeKeyAmount, fmt.Sprintf("%d", data.Amount)),
-			sdk.NewAttribute(types.AttributeKeyAck, fmt.Sprintf("%v", ack)),
+			sdk.NewAttribute(types.AttributeKeyAck, fmt.Sprintf("%v", ack.String())),
 		),
 	)
 
