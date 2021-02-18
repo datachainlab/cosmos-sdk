@@ -1,0 +1,3 @@
+[submodule "external/corda-ibc"]
+	path = external/corda-ibc
+	url = https://github.com/datachainlab/corda-ibc
