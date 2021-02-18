@@ -9,6 +9,7 @@ import (
 	solomachinetypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/06-solomachine/types"
 	ibctmtypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/07-tendermint/types"
 	localhosttypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/09-localhost/types"
+	cordatypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/xx-corda/types"
 )
 
 // RegisterInterfaces registers x/ibc interfaces into protobuf Any.
@@ -19,5 +20,6 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	solomachinetypes.RegisterInterfaces(registry)
 	ibctmtypes.RegisterInterfaces(registry)
 	localhosttypes.RegisterInterfaces(registry)
+	cordatypes.RegisterInterfaces(registry)
 	commitmenttypes.RegisterInterfaces(registry)
 }
