@@ -10,14 +10,17 @@ import (
 
 var _ exported.ClientState = (*ClientState)(nil)
 
+const VersionNumber = 0
+const VersionHeight = 1
+
 func (*ClientState) ClientType() string {
 	return "corda"
 }
 
 func (*ClientState) GetLatestHeight() exported.Height {
 	return types.Height{
-		VersionNumber: 1,
-		VersionHeight: 1,
+		VersionNumber: VersionNumber,
+		VersionHeight: VersionHeight,
 	}
 }
 
