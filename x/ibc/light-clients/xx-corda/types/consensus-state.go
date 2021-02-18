@@ -14,7 +14,7 @@ func (*ConsensusState) GetRoot() exported.Root {
 }
 
 func (*ConsensusState) GetTimestamp() uint64 {
-	panic("not implemented")
+	return 0
 }
 
 func (*ConsensusState) ValidateBasic() error {
