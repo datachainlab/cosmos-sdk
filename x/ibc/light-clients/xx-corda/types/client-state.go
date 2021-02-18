@@ -73,7 +73,7 @@ func (*ClientState) VerifyClientState(
 	proof []byte,
 	clientState exported.ClientState,
 ) error {
-	panic("not implemented")
+	return nil
 }
 
 func (*ClientState) VerifyClientConsensusState(
@@ -86,7 +86,7 @@ func (*ClientState) VerifyClientConsensusState(
 	proof []byte,
 	consensusState exported.ConsensusState,
 ) error {
-	panic("not implemented")
+	return nil
 }
 
 func (*ClientState) VerifyConnectionState(
@@ -98,7 +98,7 @@ func (*ClientState) VerifyConnectionState(
 	connectionID string,
 	connectionEnd exported.ConnectionI,
 ) error {
-	panic("not implemented")
+	return nil
 }
 
 func (*ClientState) VerifyChannelState(
@@ -111,7 +111,7 @@ func (*ClientState) VerifyChannelState(
 	channelID string,
 	channel exported.ChannelI,
 ) error {
-	panic("not implemented")
+	return nil
 }
 
 func (*ClientState) VerifyPacketCommitment(
@@ -125,7 +125,7 @@ func (*ClientState) VerifyPacketCommitment(
 	sequence uint64,
 	commitmentBytes []byte,
 ) error {
-	panic("not implemented")
+	return nil
 }
 
 func (*ClientState) VerifyPacketAcknowledgement(
@@ -139,7 +139,7 @@ func (*ClientState) VerifyPacketAcknowledgement(
 	sequence uint64,
 	acknowledgement []byte,
 ) error {
-	panic("not implemented")
+	return nil
 }
 
 func (*ClientState) VerifyPacketReceiptAbsence(
@@ -152,7 +152,7 @@ func (*ClientState) VerifyPacketReceiptAbsence(
 	channelID string,
 	sequence uint64,
 ) error {
-	panic("not implemented")
+	return nil
 }
 
 func (*ClientState) VerifyNextSequenceRecv(
@@ -165,5 +165,5 @@ func (*ClientState) VerifyNextSequenceRecv(
 	channelID string,
 	nextSequenceRecv uint64,
 ) error {
-	panic("not implemented")
+	return nil
 }
