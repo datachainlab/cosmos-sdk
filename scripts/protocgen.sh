@@ -5,6 +5,7 @@ set -eo pipefail
 proto_dirs=$(find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
 corda_ibc_proto_dir=external/corda-ibc/proto/src/main/proto
 proto_dirs+=" ./$corda_ibc_proto_dir/ibc/lightclients/corda/v1"
+proto_dirs+=" ./$corda_ibc_proto_dir/ibc/lightclientd/corda/v1"
 for dir in $proto_dirs; do
   protoc \
   -I "proto" \
