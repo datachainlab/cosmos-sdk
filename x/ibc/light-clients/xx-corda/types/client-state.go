@@ -12,12 +12,15 @@ import (
 	connectiontypes "github.com/cosmos/cosmos-sdk/x/ibc/core/03-connection/types"
 	channeltypes "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
 	commitmenttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
 	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
 	"github.com/gogo/protobuf/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+var cordaHeight = clienttypes.NewHeight(0, 1)
 
 var _ exported.ClientState = (*ClientState)(nil)
 
@@ -49,19 +52,11 @@ func connectLightclientd() lightClient {
 }
 
 func makeState(clientState *ClientState, cdc codec.BinaryMarshaler, store sdk.KVStore) *State {
-	it := store.Iterator(nil, nil)
-	defer it.Close()
-	if !it.Valid() {
-		log.Print("no consensus state")
-	}
-	consensusState := clienttypes.MustUnmarshalConsensusState(cdc, it.Value()).(*ConsensusState)
-	it.Next()
-	if it.Valid() {
-		log.Print("too many consensus states")
-	}
+	bz := store.Get(host.KeyConsensusState(cordaHeight))
+	consensusState := clienttypes.MustUnmarshalConsensusState(cdc, bz)
 	return &State{
 		ClientState:    clientState,
-		ConsensusState: consensusState,
+		ConsensusState: consensusState.(*ConsensusState),
 	}
 }
 func makeStateWithoutConsensusState(clientState *ClientState) *State {
