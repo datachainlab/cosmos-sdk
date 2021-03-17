@@ -281,13 +281,14 @@ func (cs *ClientState) VerifyConnectionState(
 	defer lc.mustClose()
 
 	concreteHeight := height.(clienttypes.Height)
+	concreteConnectionEnd := connectionEnd.(connectiontypes.ConnectionEnd)
 	_, err := lc.VerifyConnectionState(context.TODO(), &VerifyConnectionStateRequest{
 		State:         makeState(cs, cdc, store),
 		Height:        &concreteHeight,
 		Prefix:        prefix.(*commitmenttypes.MerklePrefix),
 		Proof:         proof,
 		ConnectionId:  connectionID,
-		ConnectionEnd: connectionEnd.(*connectiontypes.ConnectionEnd),
+		ConnectionEnd: &concreteConnectionEnd,
 	})
 	switch status.Convert(err).Code() {
 	case codes.OK:
@@ -312,6 +313,7 @@ func (cs *ClientState) VerifyChannelState(
 	defer lc.mustClose()
 
 	concreteHeight := height.(clienttypes.Height)
+	concreteChannel := channel.(channeltypes.Channel)
 	_, err := lc.VerifyChannelState(context.TODO(), &VerifyChannelStateRequest{
 		State:     makeState(cs, cdc, store),
 		Height:    &concreteHeight,
@@ -319,7 +321,7 @@ func (cs *ClientState) VerifyChannelState(
 		Proof:     proof,
 		PortId:    portID,
 		ChannelId: channelID,
-		Channel:   channel.(*channeltypes.Channel),
+		Channel:   &concreteChannel,
 	})
 	switch status.Convert(err).Code() {
 	case codes.OK:
