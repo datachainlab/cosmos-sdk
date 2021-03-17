@@ -250,11 +250,12 @@ func (cs *ClientState) VerifyClientConsensusState(
 		log.Fatalf("failed to make Any from exported.ClientState: %v", err)
 	}
 	concreteHeight := height.(clienttypes.Height)
+	concreteConsensusHeight := consensusHeight.(clienttypes.Height)
 	_, err = lc.VerifyClientConsensusState(context.TODO(), &VerifyClientConsensusStateRequest{
 		State:                        makeState(cs, cdc, store),
 		Height:                       &concreteHeight,
 		CounterpartyClientIdentifier: counterpartyClientIdentifier,
-		ConsensusHeight:              consensusHeight.(*clienttypes.Height),
+		ConsensusHeight:              &concreteConsensusHeight,
 		Prefix:                       prefix.(*commitmenttypes.MerklePrefix),
 		Proof:                        proof,
 		ConsensusState:               any,
