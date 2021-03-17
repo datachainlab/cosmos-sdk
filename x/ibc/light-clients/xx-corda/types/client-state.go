@@ -130,7 +130,10 @@ func (cs *ClientState) Validate() error {
 	_, err := lc.Validate(context.TODO(), &ValidateRequest{
 		makeStateWithoutConsensusState(cs),
 	})
-	if status.Convert(err).Code() != codes.Unknown {
+	switch status.Convert(err).Code() {
+	case codes.OK:
+	case codes.Unknown:
+	default:
 		log.Fatalf("failed to call gRPC function Validate: %v", err)
 	}
 	return err
@@ -178,7 +181,10 @@ func (cs *ClientState) VerifyUpgrade(
 		UpgradeHeight: upgradeHeight.(*clienttypes.Height),
 		ProofUpgrade:  proofUpgrade,
 	})
-	if status.Convert(err).Code() != codes.Unknown {
+	switch status.Convert(err).Code() {
+	case codes.OK:
+	case codes.Unknown:
+	default:
 		log.Fatalf("failed to call gRPC function VerifyUpgrade: %v", err)
 	}
 	return err
@@ -221,7 +227,10 @@ func (cs *ClientState) VerifyClientState(
 		Proof:                        proof,
 		ClientState:                  any,
 	})
-	if status.Convert(err).Code() != codes.Unknown {
+	switch status.Convert(err).Code() {
+	case codes.OK:
+	case codes.Unknown:
+	default:
 		log.Fatalf("failed to call gRPC function VerifyClient: %v", err)
 	}
 	return err
@@ -253,7 +262,10 @@ func (cs *ClientState) VerifyClientConsensusState(
 		Proof:                        proof,
 		ConsensusState:               any,
 	})
-	if status.Convert(err).Code() != codes.Unknown {
+	switch status.Convert(err).Code() {
+	case codes.OK:
+	case codes.Unknown:
+	default:
 		log.Fatalf("failed to call gRPC function VerifyClientConsensusState: %v", err)
 	}
 	return err
@@ -279,7 +291,10 @@ func (cs *ClientState) VerifyConnectionState(
 		ConnectionId:  connectionID,
 		ConnectionEnd: connectionEnd.(*connectiontypes.ConnectionEnd),
 	})
-	if status.Convert(err).Code() != codes.Unknown {
+	switch status.Convert(err).Code() {
+	case codes.OK:
+	case codes.Unknown:
+	default:
 		log.Fatalf("failed to call gRPC function VerifyConnectionState: %v", err)
 	}
 	return err
@@ -307,7 +322,10 @@ func (cs *ClientState) VerifyChannelState(
 		ChannelId: channelID,
 		Channel:   channel.(*channeltypes.Channel),
 	})
-	if status.Convert(err).Code() != codes.Unknown {
+	switch status.Convert(err).Code() {
+	case codes.OK:
+	case codes.Unknown:
+	default:
 		log.Fatalf("failed to call gRPC function VerifyChannelState: %v", err)
 	}
 	return err
@@ -337,7 +355,10 @@ func (cs *ClientState) VerifyPacketCommitment(
 		Sequence:        sequence,
 		CommitmentBytes: commitmentBytes,
 	})
-	if status.Convert(err).Code() != codes.Unknown {
+	switch status.Convert(err).Code() {
+	case codes.OK:
+	case codes.Unknown:
+	default:
 		log.Fatalf("failed to call gRPC function VerifyPacketCommitment: %v", err)
 	}
 	return err
@@ -367,7 +388,10 @@ func (cs *ClientState) VerifyPacketAcknowledgement(
 		Sequence:        sequence,
 		Acknowledgement: acknowledgement,
 	})
-	if status.Convert(err).Code() != codes.Unknown {
+	switch status.Convert(err).Code() {
+	case codes.OK:
+	case codes.Unknown:
+	default:
 		log.Fatalf("failed to call gRPC function VerifyPacketAcknowledgement: %v", err)
 	}
 	return err
@@ -395,7 +419,10 @@ func (cs *ClientState) VerifyPacketReceiptAbsence(
 		ChannelId: channelID,
 		Sequence:  sequence,
 	})
-	if status.Convert(err).Code() != codes.Unknown {
+	switch status.Convert(err).Code() {
+	case codes.OK:
+	case codes.Unknown:
+	default:
 		log.Fatalf("failed to call gRPC function VerifyPacketReceiptAbsence: %v", err)
 	}
 	return err
@@ -423,7 +450,10 @@ func (cs *ClientState) VerifyNextSequenceRecv(
 		ChannelId:        channelID,
 		NextSequenceRecv: nextSequenceRecv,
 	})
-	if status.Convert(err).Code() != codes.Unknown {
+	switch status.Convert(err).Code() {
+	case codes.OK:
+	case codes.Unknown:
+	default:
 		log.Fatalf("failed to call gRPC function VerifyNextSequenceRecv: %v", err)
 	}
 	return err
