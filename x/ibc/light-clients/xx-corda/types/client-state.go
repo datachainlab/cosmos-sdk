@@ -89,7 +89,7 @@ func (cs *ClientState) GetLatestHeight() exported.Height {
 	if err != nil {
 		log.Fatalf("failed to call gRPC function GetLatestHeight: %v", err)
 	}
-	return res.Height
+	return *res.Height
 }
 
 func (cs *ClientState) IsFrozen() bool {
@@ -115,7 +115,7 @@ func (cs *ClientState) GetFrozenHeight() exported.Height {
 	if err != nil {
 		log.Fatalf("failed to call gRPC function GetFrozenHeight: %v", err)
 	}
-	return res.Height
+	return *res.Height
 }
 
 func (cs *ClientState) Validate() error {
