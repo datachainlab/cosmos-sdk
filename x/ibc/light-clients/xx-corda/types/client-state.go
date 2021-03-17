@@ -214,9 +214,10 @@ func (cs *ClientState) VerifyClientState(
 	if err != nil {
 		log.Fatalf("failed to make Any from exported.ClientState: %v", err)
 	}
+	concreteHeight := height.(clienttypes.Height)
 	_, err = lc.VerifyClientState(context.TODO(), &VerifyClientStateRequest{
 		State:                        makeState(cs, cdc, store),
-		Height:                       height.(*clienttypes.Height),
+		Height:                       &concreteHeight,
 		Prefix:                       prefix.(*commitmenttypes.MerklePrefix),
 		CounterpartyClientIdentifier: counterpartyClientIdentifier,
 		Proof:                        proof,
@@ -248,9 +249,10 @@ func (cs *ClientState) VerifyClientConsensusState(
 	if err != nil {
 		log.Fatalf("failed to make Any from exported.ClientState: %v", err)
 	}
+	concreteHeight := height.(clienttypes.Height)
 	_, err = lc.VerifyClientConsensusState(context.TODO(), &VerifyClientConsensusStateRequest{
 		State:                        makeState(cs, cdc, store),
-		Height:                       height.(*clienttypes.Height),
+		Height:                       &concreteHeight,
 		CounterpartyClientIdentifier: counterpartyClientIdentifier,
 		ConsensusHeight:              consensusHeight.(*clienttypes.Height),
 		Prefix:                       prefix.(*commitmenttypes.MerklePrefix),
@@ -278,9 +280,10 @@ func (cs *ClientState) VerifyConnectionState(
 	lc := connectLightclientd()
 	defer lc.mustClose()
 
+	concreteHeight := height.(clienttypes.Height)
 	_, err := lc.VerifyConnectionState(context.TODO(), &VerifyConnectionStateRequest{
 		State:         makeState(cs, cdc, store),
-		Height:        height.(*clienttypes.Height),
+		Height:        &concreteHeight,
 		Prefix:        prefix.(*commitmenttypes.MerklePrefix),
 		Proof:         proof,
 		ConnectionId:  connectionID,
@@ -308,9 +311,10 @@ func (cs *ClientState) VerifyChannelState(
 	lc := connectLightclientd()
 	defer lc.mustClose()
 
+	concreteHeight := height.(clienttypes.Height)
 	_, err := lc.VerifyChannelState(context.TODO(), &VerifyChannelStateRequest{
 		State:     makeState(cs, cdc, store),
-		Height:    height.(*clienttypes.Height),
+		Height:    &concreteHeight,
 		Prefix:    prefix.(*commitmenttypes.MerklePrefix),
 		Proof:     proof,
 		PortId:    portID,
@@ -340,9 +344,10 @@ func (cs *ClientState) VerifyPacketCommitment(
 	lc := connectLightclientd()
 	defer lc.mustClose()
 
+	concreteHeight := height.(clienttypes.Height)
 	_, err := lc.VerifyPacketCommitment(context.TODO(), &VerifyPacketCommitmentRequest{
 		State:           makeState(cs, cdc, store),
-		Height:          height.(*clienttypes.Height),
+		Height:          &concreteHeight,
 		Prefix:          prefix.(*commitmenttypes.MerklePrefix),
 		Proof:           proof,
 		PortId:          portID,
@@ -373,9 +378,10 @@ func (cs *ClientState) VerifyPacketAcknowledgement(
 	lc := connectLightclientd()
 	defer lc.mustClose()
 
+	concreteHeight := height.(clienttypes.Height)
 	_, err := lc.VerifyPacketAcknowledgement(context.TODO(), &VerifyPacketAcknowledgementRequest{
 		State:           makeState(cs, cdc, store),
-		Height:          height.(*clienttypes.Height),
+		Height:          &concreteHeight,
 		Prefix:          prefix.(*commitmenttypes.MerklePrefix),
 		Proof:           proof,
 		PortId:          portID,
@@ -405,9 +411,10 @@ func (cs *ClientState) VerifyPacketReceiptAbsence(
 	lc := connectLightclientd()
 	defer lc.mustClose()
 
+	concreteHeight := height.(clienttypes.Height)
 	_, err := lc.VerifyPacketReceiptAbsence(context.TODO(), &VerifyPacketReceiptAbsenceRequest{
 		State:     makeState(cs, cdc, store),
-		Height:    height.(*clienttypes.Height),
+		Height:    &concreteHeight,
 		Prefix:    prefix.(*commitmenttypes.MerklePrefix),
 		Proof:     proof,
 		PortId:    portID,
@@ -436,9 +443,10 @@ func (cs *ClientState) VerifyNextSequenceRecv(
 	lc := connectLightclientd()
 	defer lc.mustClose()
 
+	concreteHeight := height.(clienttypes.Height)
 	_, err := lc.VerifyNextSequenceRecv(context.TODO(), &VerifyNextSequenceRecvRequest{
 		State:            makeState(cs, cdc, store),
-		Height:           height.(*clienttypes.Height),
+		Height:           &concreteHeight,
 		Prefix:           prefix.(*commitmenttypes.MerklePrefix),
 		Proof:            proof,
 		PortId:           portID,
