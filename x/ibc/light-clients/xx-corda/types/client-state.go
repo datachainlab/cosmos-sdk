@@ -20,6 +20,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+const cordaClientType = "corda"
+
 var cordaHeight = clienttypes.NewHeight(0, 1)
 
 var _ exported.ClientState = (*ClientState)(nil)
@@ -66,85 +68,28 @@ func makeStateWithoutConsensusState(clientState *ClientState) *State {
 	}
 }
 
-func (cs *ClientState) ClientType() string {
-	lc := connectLightclientd()
-	defer lc.mustClose()
-
-	res, err := lc.ClientType(context.TODO(), &ClientTypeRequest{
-		makeStateWithoutConsensusState(cs),
-	})
-	if err != nil {
-		log.Fatalf("failed to call gRPC function ClientType: %v", err)
-	}
-	return res.ClientType
+func (*ClientState) ClientType() string {
+	return cordaClientType
 }
 
-func (cs *ClientState) GetLatestHeight() exported.Height {
-	lc := connectLightclientd()
-	defer lc.mustClose()
-
-	res, err := lc.GetLatestHeight(context.TODO(), &GetLatestHeightRequest{
-		makeStateWithoutConsensusState(cs),
-	})
-	if err != nil {
-		log.Fatalf("failed to call gRPC function GetLatestHeight: %v", err)
-	}
-	return *res.Height
+func (*ClientState) GetLatestHeight() exported.Height {
+	return cordaHeight
 }
 
-func (cs *ClientState) IsFrozen() bool {
-	lc := connectLightclientd()
-	defer lc.mustClose()
-
-	res, err := lc.IsFrozen(context.TODO(), &IsFrozenRequest{
-		makeStateWithoutConsensusState(cs),
-	})
-	if err != nil {
-		log.Fatalf("failed to call gRPC function IsFrozen: %v", err)
-	}
-	return res.IsFrozen
+func (*ClientState) IsFrozen() bool {
+	return false
 }
 
-func (cs *ClientState) GetFrozenHeight() exported.Height {
-	lc := connectLightclientd()
-	defer lc.mustClose()
-
-	res, err := lc.GetFrozenHeight(context.TODO(), &GetFrozenHeightRequest{
-		makeStateWithoutConsensusState(cs),
-	})
-	if err != nil {
-		log.Fatalf("failed to call gRPC function GetFrozenHeight: %v", err)
-	}
-	return *res.Height
+func (*ClientState) GetFrozenHeight() exported.Height {
+	panic("not implemented")
 }
 
-func (cs *ClientState) Validate() error {
-	lc := connectLightclientd()
-	defer lc.mustClose()
-
-	_, err := lc.Validate(context.TODO(), &ValidateRequest{
-		makeStateWithoutConsensusState(cs),
-	})
-	switch status.Convert(err).Code() {
-	case codes.OK:
-	case codes.Unknown:
-	default:
-		log.Fatalf("failed to call gRPC function Validate: %v", err)
-	}
-	return err
+func (*ClientState) Validate() error {
+	return nil
 }
 
-func (cs *ClientState) GetProofSpecs() []*ics23.ProofSpec {
-	lc := connectLightclientd()
-	defer lc.mustClose()
-
-	res, err := lc.GetProofSpecs(context.TODO(), &GetProofSpecsRequest{
-		makeStateWithoutConsensusState(cs),
-	})
-	if err != nil {
-		log.Fatalf("failed to call gRPC function GetProofSpecs: %v", err)
-	}
-	return res.ProofSpecs
+func (*ClientState) GetProofSpecs() []*ics23.ProofSpec {
+	panic("not implemented")
 }
 
 func (*ClientState) CheckHeaderAndUpdateState(sdk.Context, codec.BinaryMarshaler, sdk.KVStore, exported.Header) (exported.ClientState, exported.ConsensusState, error) {
@@ -159,7 +104,7 @@ func (*ClientState) CheckProposedHeaderAndUpdateState(sdk.Context, codec.BinaryM
 	panic("not implemented")
 }
 
-func (cs *ClientState) VerifyUpgrade(
+func (*ClientState) VerifyUpgrade(
 	ctx sdk.Context,
 	cdc codec.BinaryMarshaler,
 	store sdk.KVStore,
@@ -167,35 +112,11 @@ func (cs *ClientState) VerifyUpgrade(
 	upgradeHeight exported.Height,
 	proofUpgrade []byte,
 ) error {
-	lc := connectLightclientd()
-	defer lc.mustClose()
-
-	_, err := lc.VerifyUpgrade(context.TODO(), &VerifyUpgradeRequest{
-		State:         makeState(cs, cdc, store),
-		NewClient:     newClient.(*ClientState),
-		UpgradeHeight: upgradeHeight.(*clienttypes.Height),
-		ProofUpgrade:  proofUpgrade,
-	})
-	switch status.Convert(err).Code() {
-	case codes.OK:
-	case codes.Unknown:
-	default:
-		log.Fatalf("failed to call gRPC function VerifyUpgrade: %v", err)
-	}
-	return err
+	panic("not implemented")
 }
 
-func (cs *ClientState) ZeroCustomFields() exported.ClientState {
-	lc := connectLightclientd()
-	defer lc.mustClose()
-
-	res, err := lc.ZeroCustomFields(context.TODO(), &ZeroCustomFieldsRequest{
-		makeStateWithoutConsensusState(cs),
-	})
-	if err != nil {
-		log.Fatalf("failed to call gRPC function ZeroCustomFields: %v", err)
-	}
-	return res.ClientState
+func (*ClientState) ZeroCustomFields() exported.ClientState {
+	panic("not implemented")
 }
 
 func (cs *ClientState) VerifyClientState(
