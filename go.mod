@@ -31,8 +31,8 @@ require (
 	github.com/otiai10/copy v1.2.0
 	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.8.0
-	github.com/prometheus/common v0.14.0
+	github.com/prometheus/client_golang v1.10.0
+	github.com/prometheus/common v0.27.0
 	github.com/rakyll/statik v0.1.7
 	github.com/regen-network/cosmos-proto v0.3.0
 	github.com/spf13/afero v1.2.2 // indirect
@@ -48,11 +48,10 @@ require (
 	github.com/tendermint/tendermint v0.34.0-rc5
 	github.com/tendermint/tm-db v0.6.2
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
-	golang.org/x/net v0.0.0-20200930145003-4acb6c075d10 // indirect
 	google.golang.org/genproto v0.0.0-20200825200019-8632dd797987
 	google.golang.org/grpc v1.32.0
 	google.golang.org/protobuf v1.25.0
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.2-alpha.regen.4
